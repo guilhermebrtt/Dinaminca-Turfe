@@ -1,18 +1,20 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
-  </head>
 
-  <body>
-    <label for="">Corrida de Cavalos</label>
-    <input type="text" id="ipt_qtd_cavalos" />
-    <button onclick="iniciar()">Dar a Largada</button>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Document</title>
+</head>
 
-    <span id="resultado"></span>
-  </body>
+<body>
+  <label for="">Corrida de Cavalos</label>
+  <input type="text" id="ipt_qtd_cavalos" />
+  <button onclick="iniciar()">Dar a Largada</button>
+
+  <span id="resultado"></span>
+</body>
+
 </html>
 <script>
   let cavalos = [];
@@ -29,9 +31,6 @@
     sortearTempo();
 
     console.log(cavalos);
-    resultado.innerHTML = `<br>
-            O cavalo vencedor é ${cavalos[index].numero};
-        `;
 
     exibirTodos();
   }
@@ -51,18 +50,32 @@
     }
     comparar();
   }
+
+  let tempo_acumulado = 0;
   let index = 0;
+
   function comparar() {
     let menor_tempo = 1000;
 
     for (let i = 0; i < cavalos.length; i++) {
+      let soma_tempo = 0;
+
       for (let j = 0; j < cavalos[i].tempo.length; j++) {
-        if (menor_tempo > cavalos[i].tempo[j]) {
-          menor_tempo = cavalos[i].tempo[j];
-          index = i;
-        }
+        soma_tempo += cavalos[i].tempo[j];
+      }
+
+      if (menor_tempo > soma_tempo) {
+        menor_tempo = soma_tempo;
+        index = i;
       }
     }
+
+    console.log('O index é ', index);
+
+    resultado.innerHTML = `
+      <br>
+      O cavalo vencedor é ${cavalos[index].numero};
+    `;
   }
 
   function exibirTodos() {
@@ -73,7 +86,7 @@
 
       for (let i = 0; i < cavalos.length; i++) {
         let tempo_sorteado = cavalos[i].tempo[j];
-        let tempo_acumulado = 0;
+        tempo_acumulado = 0;
 
         for (let k = 0; k <= j; k++) {
           tempo_acumulado += cavalos[i].tempo[k];

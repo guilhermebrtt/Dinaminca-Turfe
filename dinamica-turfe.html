@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <label for="">Corrida de Cavalos</label>
+    <input type="text" id="ipt_qtd_cavalos">
+    <button onclick="iniciar()">Dar a Largada</button>
+
+    <span id="resultado"></span>
+</body>
+
+</html>
+<script>
+
+    // Criando o array de objetos dinamicamente (cavalos)
+    let cavalos = [
+
+    ]
+    function iniciar() {
+        let qtd_cavalos = Number(ipt_qtd_cavalos.value);
+
+        for (let i = 0; i < qtd_cavalos; i++) {
+            cavalos.push(
+                {
+                    "numero": i + 1,
+                    "tempo": []
+                }
+            )
+        }
+
+        sortearTempo()
+
+        console.log(cavalos)
+        resultado.innerHTML = `<br>
+            O cavalo vencedor é ${cavalos[index].numero};
+        `
+
+        exibirTodos()
+    }
+
+
+
+    // toFixed(1) torna a varíavel como uma string, não lembramos como tratar como número
+
+
+    function sortearTempo() {
+        for (let i = 0; i < cavalos.length; i++) {
+
+            for (let j = 0; j < 7; j++) {
+                let tempo_sorteado = ((Math.random() * 2) + 7).toFixed(1);
+
+                let tempo_sorteado_num = Number(tempo_sorteado);
+                console.log(tempo_sorteado_num);
+
+                cavalos[i].tempo.push(tempo_sorteado_num)
+            }
+
+        }
+        comparar()
+    }
+    let index = 0;
+    function comparar() {
+        let menor_tempo = 1000
+
+        for (let i = 0; i < cavalos.length; i++) {
+            for (let j = 0; j < cavalos[i].tempo.length; j++) {
+                if (menor_tempo > cavalos[i].tempo[j]) {
+                    menor_tempo = cavalos[i].tempo[j]
+                    index = i
+                }
+
+            }
+
+        }
+
+
+    }
+
+    function exibirTodos() {
+        for (let i = 0; i < 7; i++) {
+
+            resultado.innerHTML += `<br>Volta ${i + 1} <br>`
+            let atual = 0
+            for (let j = 0; j < cavalos.length; j++) {
+                let contador = 0;
+                let soma = 0;
+                for (let k = 0; k < cavalos[j].tempo.length; k++) {
+                    contador++;
+                    soma += cavalos[j].tempo[k];
+                    atual = cavalos[j].tempo[k]
+                    if (contador == 1) {
+                        resultado.innerHTML += `
+                        Cavalo ${j + 1} – ${atual} – ${soma.toFixed(1)}
+                    `
+                    }
+
+                }
+            }
+
+
+
+        }
+
+    }
+
+</script>

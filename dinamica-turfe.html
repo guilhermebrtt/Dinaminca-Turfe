@@ -22,6 +22,8 @@
   let qtd_voltas = 7;
 
   function iniciar() {
+    resultado.innerHTML = '';
+
     let qtd_cavalos = Number(ipt_qtd_cavalos.value);
 
     if (qtd_cavalos < 2 || qtd_cavalos > 6) {
@@ -44,33 +46,23 @@
     qtd_voltas = Number(ipt_qtd_voltas.value);
 
     sortearTempo();
-
-    console.log(cavalos);
-
     exibirTodos();
+    comparar();
   }
-
-  // toFixed(1) torna a varíavel como uma string, não lembramos como tratar como número
 
   function sortearTempo() {
     for (let i = 0; i < cavalos.length; i++) {
       for (let j = 0; j < qtd_voltas; j++) {
-        let tempo_sorteado = (Math.random() * 2 + 7).toFixed(1);
+        let tempo_sorteado = (Math.random() * 2 + 7).toFixed(2);
 
         let tempo_sorteado_num = Number(tempo_sorteado);
-        console.log(tempo_sorteado_num);
 
         cavalos[i].tempo.push(tempo_sorteado_num);
       }
     }
-    comparar();
   }
 
-  let tempo_acumulado = 0;
-  let index = 0;
-
   function comparar() {
-    let menor_tempo = 1000;
     let ranking = [];
 
     for (let i = 0; i < cavalos.length; i++) {
@@ -84,11 +76,6 @@
         nome: cavalos[i].nome,
         soma_tempo: soma_tempo,
       });
-
-      if (menor_tempo > soma_tempo) {
-        menor_tempo = soma_tempo;
-        index = i;
-      }
     }
 
     for (let i = 0; i < ranking.length; i++) {
@@ -101,29 +88,35 @@
       }
     }
 
-    console.log('O index é ', index);
-
-    resultado.innerHTML = `
-      <br>
-      O cavalo vencedor é ${cavalos[index].nome};
-      <br>
-      1º lugar: Cavalo ${ranking[0].nome} - ${ranking[0].soma_tempo.toFixed(1)} <br>
-      2º lugar: Cavalo ${ranking[1].nome} - ${ranking[1].soma_tempo.toFixed(1)} <br>
-      3º lugar: Cavalo ${ranking[2].nome} - ${ranking[2].soma_tempo.toFixed(1)} <br>
+    resultado.innerHTML += `
+      <br><br>
+      <b>Vencedor:</b> ${ranking[0].nome}
+      <br><br>
+      <b>Pódio</b><br>
     `;
+
+    for (let i = 0; i < ranking.length && i < 3; i++) {
+      resultado.innerHTML += `
+        ${i + 1}º lugar: ${ranking[i].nome} - ${ranking[i].soma_tempo.toFixed(2)}
+        <br>
+      `;
+    }
   }
 
   function exibirTodos() {
     for (let j = 0; j < qtd_voltas; j++) {
-      resultado.innerHTML += `<br>
-                Volta ${j + 1} <br>
-            `;
+      resultado.innerHTML += `
+        <br>
+        Volta ${String(j + 1).padStart(2, '0')}
+        <br>
+      `;
 
       let acumulados = [];
 
       for (let i = 0; i < cavalos.length; i++) {
         let tempo_sorteado = cavalos[i].tempo[j];
-        tempo_acumulado = 0;
+
+        let tempo_acumulado = 0;
 
         for (let k = 0; k <= j; k++) {
           tempo_acumulado += cavalos[i].tempo[k];
@@ -134,7 +127,12 @@
           tempo_acumulado: tempo_acumulado,
         });
 
-        resultado.innerHTML += `Cavalo ${cavalos[i].nome} - ${tempo_sorteado} - ${tempo_acumulado.toFixed(1)} <br>`;
+        resultado.innerHTML += `
+          Cavalo ${cavalos[i].nome} -
+          ${tempo_sorteado.toFixed(2)} -
+          ${tempo_acumulado.toFixed(2)}
+          <br>
+        `;
       }
 
       let menor_acumulado = 1000;
@@ -146,14 +144,20 @@
           segundo_menor_acumulado = menor_acumulado;
           menor_acumulado = acumulados[i].tempo_acumulado;
           nome_lider = acumulados[i].nome;
-        } else if (acumulados[i].tempo_acumulado < segundo_menor_acumulado) {
+        } else if (
+          acumulados[i].tempo_acumulado < segundo_menor_acumulado
+        ) {
           segundo_menor_acumulado = acumulados[i].tempo_acumulado;
         }
       }
 
       let diferenca = segundo_menor_acumulado - menor_acumulado;
 
-      resultado.innerHTML += `Líder: ${nome_lider} - Diferença para o 2º: ${diferenca.toFixed(1)} <br>`;
+      resultado.innerHTML += `
+        Líder: ${nome_lider} -
+        Diferença para o 2º: ${diferenca.toFixed(2)}
+        <br>
+      `;
     }
   }
 </script>

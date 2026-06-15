@@ -5,29 +5,43 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Document</title>
+  <link rel="stylesheet" href="dinamica-turfe.css">
 </head>
 
 <body>
-  <label for="">Corrida de Cavalos</label>
-  <input type="text" id="ipt_qtd_cavalos" placeholder="Quantidade de Cavalos" />
-  <input type="text" id="ipt_qtd_voltas" placeholder="Quantidade de Voltas" />
-  <button onclick="iniciar()">Dar a Largada</button>
+  <div class="geral">
+    <div class="inicio" id="inicio">
+      <div class="card_inicio">
+        <h1>PixelTurfe</h1>
+        <h2>Corrida de Cavalos</h2>
+        <button onclick="trocar()">Começar</button>
+      </div>
+    </div>
+    <div class="game" id="game">
+      <div class="game_card">
+      <h1 for="">Vamos iniciar nossa corrida</h1>
+      <input type="text" id="ipt_qtd_cavalos" placeholder="Quantidade de Cavalos" />
+      <input type="text" id="ipt_qtd_voltas" placeholder="Quantidade de Voltas" />
+      <button onclick="iniciar()">Dar a Largada</button>
 
-  <span id="resultado"></span>
+      <span id="resultado"></span>
+    </div>
+  </div>
 </body>
 
 </html>
 <script>
   let cavalos = [];
   let qtd_voltas = 7;
+  let vitoria_maxima
 
   function iniciar() {
-    resultado.innerHTML = '';
+    resultado.innerHTML = "";
 
     let qtd_cavalos = Number(ipt_qtd_cavalos.value);
 
     if (qtd_cavalos < 2 || qtd_cavalos > 6) {
-      alert('A quantidade de cavalos deve ser entre 2 e 6.');
+      alert("A quantidade de cavalos deve ser entre 2 e 6.");
       return;
     }
 
@@ -88,12 +102,17 @@
       }
     }
 
+    
+
     resultado.innerHTML += `
       <br><br>
       <b>Vencedor:</b> ${ranking[0].nome}
       <br><br>
       <b>Pódio</b><br>
     `;
+
+    vitoria_maxima = ranking[0].nome
+    console.log(vitoria_maxima)
 
     for (let i = 0; i < ranking.length && i < 3; i++) {
       resultado.innerHTML += `
@@ -107,7 +126,7 @@
     for (let j = 0; j < qtd_voltas; j++) {
       resultado.innerHTML += `
         <br>
-        Volta ${String(j + 1).padStart(2, '0')}
+        Volta ${String(j + 1).padStart(2, "0")}
         <br>
       `;
 
@@ -137,16 +156,14 @@
 
       let menor_acumulado = 1000;
       let segundo_menor_acumulado = 1000;
-      let nome_lider = '';
+      let nome_lider = "";
 
       for (let i = 0; i < acumulados.length; i++) {
         if (acumulados[i].tempo_acumulado < menor_acumulado) {
           segundo_menor_acumulado = menor_acumulado;
           menor_acumulado = acumulados[i].tempo_acumulado;
           nome_lider = acumulados[i].nome;
-        } else if (
-          acumulados[i].tempo_acumulado < segundo_menor_acumulado
-        ) {
+        } else if (acumulados[i].tempo_acumulado < segundo_menor_acumulado) {
           segundo_menor_acumulado = acumulados[i].tempo_acumulado;
         }
       }
@@ -160,4 +177,10 @@
       `;
     }
   }
+
+  function trocar() {
+    inicio.style.display = "none"
+    game.style.display = "flex"
+  }
+
 </script>

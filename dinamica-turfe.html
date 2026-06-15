@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Document</title>
+  <title>Game Turfe</title>
   <link rel="stylesheet" href="dinamica-turfe.css">
 </head>
 
@@ -23,7 +23,6 @@
       <input type="text" id="ipt_qtd_cavalos" placeholder="Quantidade de Cavalos" />
       <input type="text" id="ipt_qtd_voltas" placeholder="Quantidade de Voltas" />
       <button onclick="iniciar()">Dar a Largada</button>
-
       <span id="resultado"></span>
     </div>
   </div>
@@ -35,7 +34,7 @@
   let qtd_voltas = 7;
   let vitoria_maxima
 
-  function iniciar() {
+  async function iniciar() {
     resultado.innerHTML = "";
 
     let qtd_cavalos = Number(ipt_qtd_cavalos.value);
@@ -60,7 +59,7 @@
     qtd_voltas = Number(ipt_qtd_voltas.value);
 
     sortearTempo();
-    exibirTodos();
+    await exibirTodos();
     comparar();
   }
 
@@ -76,9 +75,9 @@
     }
   }
 
-  function comparar() {
-    let ranking = [];
+let ranking = [];
 
+  function comparar() {
     for (let i = 0; i < cavalos.length; i++) {
       let soma_tempo = 0;
 
@@ -108,22 +107,55 @@
       <br><br>
       <b>Vencedor:</b> ${ranking[0].nome}
       <br><br>
-      <b>Pódio</b><br>
+      <button onclick="exibirRanking()" class="btn-podio">Pódio</button>
     `;
 
     vitoria_maxima = ranking[0].nome
     console.log(vitoria_maxima)
 
-    for (let i = 0; i < ranking.length && i < 3; i++) {
-      resultado.innerHTML += `
-        ${i + 1}º lugar: ${ranking[i].nome} - ${ranking[i].soma_tempo.toFixed(2)}
-        <br>
-      `;
-    }
+    
   }
 
-  function exibirTodos() {
+  function exibirRanking() {
+    resultado.innerHTML = "";
+
+    const lugares = [
+        { classe: "segundo",  label: "2º", indice: 1 },
+        { classe: "primeiro", label: "1º", indice: 0 },
+        { classe: "terceiro", label: "3º", indice: 2 },
+    ];
+
+    let html = `<div class="podio_container">`;
+
+    for (let i = 0; i < lugares.length; i++) {
+        const cavalo = ranking[lugares[i].indice];
+
+        console.log(cavalo.imagem);
+        
+        const nomeImagem = cavalo ? `
+            <span class="podio_nome">${cavalo.nome}</span>
+            <img class="podio_imagem" src="imagens/cavalo${lugares[i].indice + 1}.png">
+        ` : "";
+
+        html += `
+            <div class="podio_lugar">
+                <div class="podio_info">${nomeImagem}</div>
+                <div class="podio_plataforma ${lugares[i].classe}">${lugares[i].label}</div>
+            </div>
+        `;
+    }
+
+    html += `</div>`;
+    resultado.innerHTML = html;
+
+    resultado.innerHTML += `<button onclick="location.reload()" class="btn-reload">Jogar de novo</button>`
+}
+
+   async function exibirTodos() {
+    const pausa = (ms) => new Promise(resolve => setTimeout(resolve, ms))
+
     for (let j = 0; j < qtd_voltas; j++) {
+      
       resultado.innerHTML += `
         <br>
         Volta ${String(j + 1).padStart(2, "0")}
@@ -175,6 +207,8 @@
         Diferença para o 2º: ${diferenca.toFixed(2)}
         <br>
       `;
+
+      await pausa(500)
     }
   }
 
